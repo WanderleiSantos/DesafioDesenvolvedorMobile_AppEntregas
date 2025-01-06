@@ -40,6 +40,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import com.luizalabs.labsentregas.R
 import com.luizalabs.labsentregas.ui.components.DatePickerTextField
 import com.luizalabs.labsentregas.ui.components.DeliveryDropdownField
@@ -49,6 +50,7 @@ import com.luizalabs.labsentregas.util.BrazilStates
 
 @Composable
 fun NewDeliveryScreen(
+    navController: NavController,
     viewModel: NewDeliveryViewModel = hiltViewModel()
 ) {
     var selectedOption by remember { mutableStateOf("") }
