@@ -1,3 +1,15 @@
 <resources>
     <string name="app_name">Labs Entregas</string>
+    <string name="nova_entrega">Nova Entrega</string>
+    <string name="cliente">Cliente</string>
+    <string name="cpf">CPF</string>
+    <string name="quantidade_pacotes">Quantidade Pacotes</string>
+    <string name="data_limite">Data Limite</string>
+    <string name="cep">CEP</string>
+    <string name="uf">UF</string>
+    <string name="cidade">Cidade</string>
+    <string name="bairro">Bairro</string>
+    <string name="rua">Rua</string>
+    <string name="n_mero">Número</string>
+    <string name="complemento">Complemento</string>
 </resources>

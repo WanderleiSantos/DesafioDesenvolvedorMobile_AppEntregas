@@ -1,0 +1,240 @@
+package com.luizalabs.labsentregas.ui.newdelivery
+
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
+import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.luizalabs.labsentregas.R
+import com.luizalabs.labsentregas.ui.components.DatePickerTextField
+import com.luizalabs.labsentregas.ui.components.DeliveryDropdownField
+import com.luizalabs.labsentregas.ui.components.DeliveryTextField
+import com.luizalabs.labsentregas.ui.theme.CornflowerBlue
+import com.luizalabs.labsentregas.util.BrazilStates
+
+@Composable
+fun NewDeliveryScreen(
+    viewModel: NewDeliveryViewModel = hiltViewModel()
+) {
+    var selectedOption by remember { mutableStateOf("") }
+    var selectedDate by remember { mutableStateOf("") }
+    val loading = remember { mutableStateOf(false) }
+
+    Box(
+        modifier = Modifier.fillMaxSize()
+    ) {
+        Image(
+            painter = painterResource(id = R.drawable.ic_bg),
+            contentDescription = null,
+            modifier = Modifier.fillMaxSize(),
+            contentScale = ContentScale.FillBounds
+        )
+
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp)
+                .verticalScroll(rememberScrollState()),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = stringResource(R.string.nova_entrega),
+                fontSize = 28.sp,
+                fontWeight = FontWeight.SemiBold,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 64.dp)
+            )
+            Spacer(modifier = Modifier.size(20.dp))
+            DeliveryTextField(
+                value = "",
+                onValueChange = {},
+                label = {
+                    Text(text = stringResource(R.string.cliente), color = Color.Gray, fontSize = 14.sp)
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(48.dp)
+            )
+            DeliveryTextField(
+                value = "",
+                onValueChange = {},
+                label = {
+                    Text(text = stringResource(R.string.cpf), color = Color.Gray, fontSize = 14.sp)
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(48.dp)
+            )
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                DeliveryTextField(
+                    value = "",
+                    onValueChange = {},
+                    label = {
+                        Text(text = stringResource(R.string.quantidade_pacotes), color = Color.Gray, fontSize = 14.sp)
+                    },
+                    modifier = Modifier
+                        .width(180.dp)
+                        .height(48.dp)
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                DatePickerTextField(
+                    label = {
+                        Text(text = stringResource(R.string.data_limite), color = Color.Gray, fontSize = 14.sp)
+                    },
+                    selectedDate = selectedDate,
+                    onDateChange = { selectedDate = it }
+                )
+            }
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                DeliveryTextField(
+                    value = "",
+                    onValueChange = {},
+                    label = {
+                        Text(text = stringResource(R.string.cep), color = Color.Gray, fontSize = 14.sp)
+                    },
+                    modifier = Modifier
+                        .width(230.dp)
+                        .height(48.dp)
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                DeliveryDropdownField(
+                    selectedValue = selectedOption,
+                    onValueChange = { selectedOption = it },
+                    label = { Text(text = stringResource(R.string.uf), color = Color.Gray, fontSize = 14.sp) },
+                    options = BrazilStates.states,
+                    placeholder = { Text("...") },
+                )
+            }
+            DeliveryDropdownField(
+                selectedValue = selectedOption,
+                onValueChange = { selectedOption = it },
+                label = { Text(text = stringResource(R.string.cidade), color = Color.Gray, fontSize = 14.sp) },
+                options = listOf(""),
+                placeholder = { Text("...") },
+            )
+            DeliveryTextField(
+                value = "",
+                onValueChange = {},
+                label = {
+                    Text(text = stringResource(R.string.bairro), color = Color.Gray, fontSize = 14.sp)
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(48.dp)
+            )
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                DeliveryTextField(
+                    value = "",
+                    onValueChange = {},
+                    label = {
+                        Text(text = stringResource(R.string.rua), color = Color.Gray, fontSize = 14.sp)
+                    },
+                    modifier = Modifier
+                        .width(200.dp)
+                        .height(48.dp)
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                DeliveryTextField(
+                    value = "",
+                    onValueChange = {},
+                    label = {
+                        Text(text = stringResource(R.string.n_mero), color = Color.Gray, fontSize = 14.sp)
+                    },
+                    modifier = Modifier.height(48.dp)
+                )
+            }
+            DeliveryTextField(
+                value = "",
+                onValueChange = {},
+                label = {
+                    Text(text = stringResource(R.string.complemento), color = Color.Gray, fontSize = 14.sp)
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(48.dp)
+            )
+            Spacer(modifier = Modifier.size(16.dp))
+            Button(
+                onClick = {},
+                modifier = Modifier
+                    .height(48.dp)
+                    .fillMaxWidth()
+                    ,
+                colors = ButtonDefaults.buttonColors(containerColor = CornflowerBlue)
+            ) {
+                Box {
+                    AnimatedContent(targetState = loading.value,
+                        transitionSpec = {
+                            fadeIn(animationSpec = tween(300)) + scaleIn(initialScale = 0.8f) togetherWith
+                                    fadeOut(animationSpec = tween(300)) + scaleOut(targetScale = 0.8f)
+                        }
+                    ) { target ->
+                        if (target) {
+                            CircularProgressIndicator(
+                                color = Color.White,
+                                modifier = Modifier
+                                    .padding(horizontal = 32.dp)
+                                    .size(24.dp)
+                            )
+                        } else {
+                            Text(
+                                text = "Cadastrar Entrega",
+                                color = Color.White,
+                                fontSize = 16.sp,
+                                modifier = Modifier.padding(horizontal = 32.dp)
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
