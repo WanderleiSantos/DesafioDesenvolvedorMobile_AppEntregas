@@ -30,61 +30,64 @@ class NewDeliveryViewModel @Inject constructor(
     private val _navigationEvent = MutableSharedFlow<NewDeliveryNavigationEvent>()
     val navigationEvent = _navigationEvent.asSharedFlow()
 
-    private val _packageQuantity = MutableStateFlow("")
-    val packageQuantity = _packageQuantity.asStateFlow()
+    val packageQuantity = MutableStateFlow("")
+    val packageQuantityError = MutableStateFlow(false)
 
-    private val _deliveryDeadline = MutableStateFlow("")
-    val deliveryDeadline = _deliveryDeadline.asStateFlow()
+    val deliveryDeadline = MutableStateFlow("")
+    val deliveryDeadlineError = MutableStateFlow(false)
 
-    private val _customerName = MutableStateFlow("")
-    val customerName = _customerName.asStateFlow()
+    val customerName = MutableStateFlow("")
+    val customerNameError = MutableStateFlow(false)
 
-    private val _customerCpf = MutableStateFlow("")
-    val customerCpf = _customerCpf.asStateFlow()
+    val customerCpf = MutableStateFlow("")
+    val customerCpfError = MutableStateFlow(false)
 
-    private val _zipCode = MutableStateFlow("")
-    val zipCode = _zipCode.asStateFlow()
+    val zipCode = MutableStateFlow("")
+    val zipCodeError = MutableStateFlow(false)
 
-    private val _state = MutableStateFlow("")
-    val state = _state.asStateFlow()
+    val state = MutableStateFlow("")
+    val stateError = MutableStateFlow(false)
 
-    private val _city = MutableStateFlow("")
-    val city = _city.asStateFlow()
+    val city = MutableStateFlow("")
+    val cityError = MutableStateFlow(false)
 
-    private val _neighborhood = MutableStateFlow("")
-    val neighborhood = _neighborhood.asStateFlow()
+    val neighborhood = MutableStateFlow("")
+    val neighborhoodError = MutableStateFlow(false)
 
-    private val _street = MutableStateFlow("")
-    val street = _street.asStateFlow()
+    val street = MutableStateFlow("")
+    val streetError = MutableStateFlow(false)
 
-    private val _number = MutableStateFlow("")
-    val number = _number.asStateFlow()
+    val number = MutableStateFlow("")
+    val numberError = MutableStateFlow(false)
 
-    private val _complement = MutableStateFlow<String?>(null)
-    val complement = _complement.asStateFlow()
+    val complement = MutableStateFlow<String?>(null)
 
     fun onPackageQuantityChange(newValue: String) {
-        _packageQuantity.value = newValue
+        clearFieldError(packageQuantity, packageQuantityError, newValue)
     }
 
     fun onDeliveryDeadlineChange(newValue: String) {
-        _deliveryDeadline.value = newValue
+        clearFieldError(deliveryDeadline, deliveryDeadlineError, newValue)
     }
 
     fun onCustomerNameChange(newValue: String) {
-        _customerName.value = newValue
+        clearFieldError(customerName, customerNameError, newValue)
     }
 
     fun onCustomerCpfChange(newValue: String) {
-        _customerCpf.value = newValue
+        clearFieldError(customerCpf, customerCpfError, newValue)
     }
 
     fun onZipCodeChange(newValue: String) {
-        _zipCode.value = newValue
+        clearFieldError(zipCode, zipCodeError, newValue)
+    }
+
+    fun onComplementChange(newValue: String?) {
+        complement.value = newValue
     }
 
     fun onStateChange(newValue: String) {
-        _state.value = newValue
+        clearFieldError(state, stateError, newValue)
         viewModelScope.launch {
             _uiState.emit(NewDeliveryEvent.Loading)
             try {
@@ -98,26 +101,79 @@ class NewDeliveryViewModel @Inject constructor(
     }
 
     fun onCityChange(newValue: String) {
-        _city.value = newValue
+        clearFieldError(city, cityError, newValue)
     }
 
     fun onNeighborhoodChange(newValue: String) {
-        _neighborhood.value = newValue
+        clearFieldError(neighborhood, neighborhoodError, newValue)
     }
 
     fun onStreetChange(newValue: String) {
-        _street.value = newValue
+        clearFieldError(street, streetError, newValue)
     }
 
     fun onNumberChange(newValue: String) {
-        _number.value = newValue
+        clearFieldError(number, numberError, newValue)
     }
 
-    fun onComplementChange(newValue: String?) {
-        _complement.value = newValue
+    fun validateFields(): Boolean {
+        var isValid = true
+
+        if (packageQuantity.value.isBlank()) {
+            packageQuantityError.value = true
+            isValid = false
+        }
+        if (deliveryDeadline.value.isBlank()) {
+            deliveryDeadlineError.value = true
+            isValid = false
+        }
+        if (customerName.value.isBlank()) {
+            customerNameError.value = true
+            isValid = false
+        }
+        if (customerCpf.value.isBlank()) {
+            customerCpfError.value = true
+            isValid = false
+        }
+        if (zipCode.value.isBlank()) {
+            zipCodeError.value = true
+            isValid = false
+        }
+        if (state.value.isBlank()) {
+            stateError.value = true
+            isValid = false
+        }
+        if (city.value.isBlank()) {
+            cityError.value = true
+            isValid = false
+        }
+        if (neighborhood.value.isBlank()) {
+            neighborhoodError.value = true
+            isValid = false
+        }
+        if (street.value.isBlank()) {
+            streetError.value = true
+            isValid = false
+        }
+        if (number.value.isBlank()) {
+            numberError.value = true
+            isValid = false
+        }
+
+        return isValid
+    }
+
+    private fun clearFieldError(field: MutableStateFlow<String>, errorState: MutableStateFlow<Boolean>, newValue: String) {
+        field.value = newValue
+        if (errorState.value) {
+            errorState.value = false
+        }
     }
 
     fun onAddClick() {
+
+        if (!validateFields()) return
+
         viewModelScope.launch {
             _uiState.value = NewDeliveryEvent.Loading
             try {

@@ -40,6 +40,7 @@ fun DatePickerTextField(
     onDateChange: (String) -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
+    isError: Boolean = false,
     colors: TextFieldColors = OutlinedTextFieldDefaults.colors().copy(
         focusedIndicatorColor = CornflowerBlue,
         unfocusedIndicatorColor = Color.LightGray.copy(alpha = 0.4f),
@@ -98,6 +99,7 @@ fun DatePickerTextField(
                     )
                 },
                 colors = colors,
+                isError = isError
             )
         }
     }

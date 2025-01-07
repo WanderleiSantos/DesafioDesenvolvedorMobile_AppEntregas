@@ -128,7 +128,10 @@ fun NewDeliveryScreen(
             Spacer(modifier = Modifier.size(20.dp))
             DeliveryTextField(
                 value = customerName.value,
-                onValueChange = { viewModel.onCustomerNameChange(it) },
+                onValueChange = {
+                    viewModel.onCustomerNameChange(it)
+                },
+                isError = viewModel.customerNameError.collectAsState().value,
                 label = {
                     Text(
                         text = stringResource(R.string.cliente),
@@ -143,6 +146,7 @@ fun NewDeliveryScreen(
             DeliveryTextField(
                 value = customerCpf.value,
                 onValueChange = { viewModel.onCustomerCpfChange(it) },
+                isError = viewModel.customerCpfError.collectAsState().value,
                 label = {
                     Text(text = stringResource(R.string.cpf), color = Color.Gray, fontSize = 14.sp)
                 },
@@ -158,6 +162,7 @@ fun NewDeliveryScreen(
                 DeliveryTextField(
                     value = packageQuantity.value,
                     onValueChange = { viewModel.onPackageQuantityChange(it) },
+                    isError = viewModel.packageQuantityError.collectAsState().value,
                     label = {
                         Text(
                             text = stringResource(R.string.quantidade_pacotes),
@@ -179,7 +184,8 @@ fun NewDeliveryScreen(
                         )
                     },
                     selectedDate = deliveryDeadline.value,
-                    onDateChange = { viewModel.onDeliveryDeadlineChange(it) }
+                    onDateChange = { viewModel.onDeliveryDeadlineChange(it) },
+                    isError = viewModel.deliveryDeadlineError.collectAsState().value,
                 )
             }
             Row(
@@ -190,6 +196,7 @@ fun NewDeliveryScreen(
                 DeliveryTextField(
                     value = zipCode.value,
                     onValueChange = { viewModel.onZipCodeChange(it) },
+                    isError = viewModel.zipCodeError.collectAsState().value,
                     label = {
                         Text(
                             text = stringResource(R.string.cep),
@@ -205,6 +212,7 @@ fun NewDeliveryScreen(
                 DeliveryDropdownField(
                     selectedValue = state.value,
                     onValueChange = { viewModel.onStateChange(it) },
+                    isError = viewModel.stateError.collectAsState().value,
                     label = {
                         Text(
                             text = stringResource(R.string.uf),
@@ -219,6 +227,7 @@ fun NewDeliveryScreen(
             DeliveryDropdownField(
                 selectedValue = city.value,
                 onValueChange = { viewModel.onCityChange(it) },
+                isError = viewModel.cityError.collectAsState().value,
                 label = {
                     Text(
                         text = stringResource(R.string.cidade),
@@ -232,6 +241,7 @@ fun NewDeliveryScreen(
             DeliveryTextField(
                 value = neighborhood.value,
                 onValueChange = { viewModel.onNeighborhoodChange(it) },
+                isError = viewModel.neighborhoodError.collectAsState().value,
                 label = {
                     Text(
                         text = stringResource(R.string.bairro),
@@ -251,6 +261,7 @@ fun NewDeliveryScreen(
                 DeliveryTextField(
                     value = street.value,
                     onValueChange = { viewModel.onStreetChange(it) },
+                    isError = viewModel.streetError.collectAsState().value,
                     label = {
                         Text(
                             text = stringResource(R.string.rua),
@@ -266,6 +277,7 @@ fun NewDeliveryScreen(
                 DeliveryTextField(
                     value = number.value,
                     onValueChange = { viewModel.onNumberChange(it) },
+                    isError = viewModel.numberError.collectAsState().value,
                     label = {
                         Text(
                             text = stringResource(R.string.n_mero),
@@ -292,7 +304,11 @@ fun NewDeliveryScreen(
             )
             Spacer(modifier = Modifier.size(16.dp))
             Button(
-                onClick = viewModel::onAddClick,
+                onClick = {
+                    if (viewModel.validateFields()) {
+                        viewModel.onAddClick()
+                    }
+                },
                 modifier = Modifier
                     .height(48.dp)
                     .fillMaxWidth(),
