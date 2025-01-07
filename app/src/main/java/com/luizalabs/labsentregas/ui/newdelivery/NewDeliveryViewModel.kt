@@ -1,8 +1,11 @@
 package com.luizalabs.labsentregas.ui.newdelivery
 
+import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.luizalabs.labsentregas.core.data.local.DeliveryEntity
+import com.luizalabs.labsentregas.core.data.remote.IBGEApiService
 import com.luizalabs.labsentregas.domain.repository.DeliveryRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -14,8 +17,12 @@ import javax.inject.Inject
 
 @HiltViewModel
 class NewDeliveryViewModel @Inject constructor(
-    private val deliveryRepository: DeliveryRepository
+    private val deliveryRepository: DeliveryRepository,
+    private val ibgeApiService: IBGEApiService
 ) : ViewModel() {
+
+    private val _cityOptions = mutableStateOf<List<String>>(emptyList())
+    val cityOptions: State<List<String>> get() = _cityOptions
 
     private val _uiState = MutableStateFlow<NewDeliveryEvent>(NewDeliveryEvent.Nothing)
     val uiState = _uiState.asStateFlow()
@@ -78,6 +85,16 @@ class NewDeliveryViewModel @Inject constructor(
 
     fun onStateChange(newValue: String) {
         _state.value = newValue
+        viewModelScope.launch {
+            _uiState.emit(NewDeliveryEvent.Loading)
+            try {
+                val cities = ibgeApiService.getCities(newValue).map { it.nome }
+                _cityOptions.value = cities
+                _uiState.emit(NewDeliveryEvent.Success)
+            } catch (e: Exception) {
+                _uiState.emit(NewDeliveryEvent.Error)
+            }
+        }
     }
 
     fun onCityChange(newValue: String) {

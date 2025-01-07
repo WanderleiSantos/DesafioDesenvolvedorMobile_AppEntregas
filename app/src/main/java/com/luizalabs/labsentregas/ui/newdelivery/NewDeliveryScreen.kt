@@ -226,7 +226,7 @@ fun NewDeliveryScreen(
                         fontSize = 14.sp
                     )
                 },
-                options = listOf(""),
+                options = viewModel.cityOptions.value,
                 placeholder = { Text("...") },
             )
             DeliveryTextField(

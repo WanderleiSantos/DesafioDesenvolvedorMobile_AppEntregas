@@ -160,6 +160,8 @@ fun HomeScreen(
                                             append(delivery.neighborhood)
                                             append(", ")
                                             append(delivery.street)
+                                            append(", ")
+                                            append(delivery.state)
                                         },
                                         style = MaterialTheme
                                             .typography.labelMedium.copy(fontWeight = FontWeight.Normal),
