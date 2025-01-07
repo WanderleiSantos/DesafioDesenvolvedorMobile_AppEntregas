@@ -19,13 +19,18 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -36,6 +41,7 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.luizalabs.labsentregas.R
 import com.luizalabs.labsentregas.core.data.local.DeliveryEntity
@@ -43,38 +49,14 @@ import com.luizalabs.labsentregas.ui.navigation.NewDelivery
 import com.luizalabs.labsentregas.ui.theme.CornflowerBlue
 
 @Composable
-fun HomeScreen(navController: NavController) {
+fun HomeScreen(
+    navController: NavController,
+    viewModel: HomeViewModel = hiltViewModel()
+) {
 
-    val deliveries = listOf(
-        DeliveryEntity(
-            deliveryId = 1,
-            packageQuantity = 3,
-            customerName = "John Doe",
-            customerCpf = "123.456.789-10",
-            deliveryDeadline = "2025-01-10",
-            zipCode = "12345-678",
-            state = "SP",
-            city = "São Paulo",
-            neighborhood = "Jardins",
-            street = "Rua das Flores",
-            number = "100",
-            complement = "Apto 202"
-        ),
-        DeliveryEntity(
-            deliveryId = 2,
-            packageQuantity = 1,
-            customerName = "Jane Smith",
-            customerCpf = "987.654.321-00",
-            deliveryDeadline = "2025-01-15",
-            zipCode = "87654-321",
-            state = "RJ",
-            city = "Rio de Janeiro",
-            neighborhood = "Copacabana",
-            street = "Avenida Atlântica",
-            number = "2000",
-            complement = null
-        )
-    )
+    val deliveries by viewModel.deliveries.collectAsState(emptyList())
+
+    var deliveryToDelete by remember { mutableStateOf<DeliveryEntity?>(null) }
 
     Box() {
         Image(
@@ -198,14 +180,38 @@ fun HomeScreen(navController: NavController) {
                                 contentDescription = null,
                                 modifier = Modifier
                                     .size(32.dp)
-                                    .clickable { },
+                                    .clickable { deliveryToDelete = delivery },
                                 tint = Color.LightGray,
-
-                                )
+                            )
                         }
                     }
                 }
             }
+        }
+
+        if (deliveryToDelete != null) {
+            AlertDialog(
+                onDismissRequest = { deliveryToDelete = null },
+                title = { Text("Confirmar Exclusão") },
+                text = {
+                    Text("Você tem certeza que deseja excluir a entrega ${deliveryToDelete?.deliveryId}?")
+                },
+                confirmButton = {
+                    Button(
+                        onClick = {
+                            deliveryToDelete?.let { viewModel.deleteDelivery(it) }
+                            deliveryToDelete = null
+                        }
+                    ) {
+                        Text("Excluir")
+                    }
+                },
+                dismissButton = {
+                    Button(onClick = { deliveryToDelete = null }) {
+                        Text("Cancelar")
+                    }
+                }
+            )
         }
     }
 }

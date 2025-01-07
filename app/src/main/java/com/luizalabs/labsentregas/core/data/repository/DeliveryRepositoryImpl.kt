@@ -19,4 +19,8 @@ class DeliveryRepositoryImpl @Inject constructor(
     override suspend fun getDeliveryById(deliveryId: Int): DeliveryEntity {
         return deliveryDataBase.deliveryDao.getDeliveryById(deliveryId)
     }
+
+    override suspend fun deleteDelivery(delivery: DeliveryEntity) {
+        deliveryDataBase.deliveryDao.deleteDelivery(delivery)
+    }
 }

@@ -119,7 +119,6 @@ class NewDeliveryViewModel @Inject constructor(
                     complement = complement.value
                 )
 
-
                 deliveryRepository.insertDelivery(entity)
 
                 _uiState.value = NewDeliveryEvent.Success

@@ -7,4 +7,5 @@ interface DeliveryRepository {
     suspend fun insertDelivery(delivery: DeliveryEntity)
     suspend fun getDeliveries(): List<DeliveryEntity>
     suspend fun getDeliveryById(deliveryId: Int): DeliveryEntity
+    suspend fun deleteDelivery(delivery: DeliveryEntity)
 }

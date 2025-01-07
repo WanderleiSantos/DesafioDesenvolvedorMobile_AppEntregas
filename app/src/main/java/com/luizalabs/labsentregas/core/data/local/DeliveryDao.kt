@@ -1,6 +1,7 @@
 package com.luizalabs.labsentregas.core.data.local
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 
@@ -14,4 +15,7 @@ interface DeliveryDao {
 
     @Query("SELECT * FROM DeliveryEntity WHERE deliveryId = :deliveryId")
     suspend fun getDeliveryById(deliveryId: Int): DeliveryEntity
+
+    @Delete
+    suspend fun deleteDelivery(delivery: DeliveryEntity)
 }
