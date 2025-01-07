@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
@@ -34,6 +35,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -47,6 +49,8 @@ import com.luizalabs.labsentregas.ui.navigation.Home
 import com.luizalabs.labsentregas.ui.theme.CornflowerBlue
 import com.luizalabs.labsentregas.ui.theme.LimeGreen
 import com.luizalabs.labsentregas.util.BrazilStates
+import com.luizalabs.labsentregas.util.CepVisualTransformation
+import com.luizalabs.labsentregas.util.CpfVisualTransformation
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
@@ -152,12 +156,16 @@ fun DeliveryDetailsScreen(
             )
             DeliveryTextField(
                 value = customerCpf.value,
-                onValueChange = { viewModel.onCustomerCpfChange(it) },
+                onValueChange = { if (it.length < 12) viewModel.onCustomerCpfChange(it) },
                 isError = viewModel.customerCpfError.collectAsState().value,
                 enabled = isEditable,
                 label = {
                     Text(text = stringResource(R.string.cpf), color = Color.Gray, fontSize = 14.sp)
                 },
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Number
+                ),
+                visualTransformation = CpfVisualTransformation(),
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(48.dp)
@@ -179,6 +187,9 @@ fun DeliveryDetailsScreen(
                             fontSize = 14.sp
                         )
                     },
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Number
+                    ),
                     modifier = Modifier
                         .width(180.dp)
                         .height(48.dp)
@@ -205,9 +216,10 @@ fun DeliveryDetailsScreen(
             ) {
                 DeliveryTextField(
                     value = zipCode.value,
-                    onValueChange = { viewModel.onZipCodeChange(it) },
+                    onValueChange = { if (it.length < 9) viewModel.onZipCodeChange(it) },
                     isError = viewModel.zipCodeError.collectAsState().value,
                     enabled = isEditable,
+                    visualTransformation = CepVisualTransformation(),
                     label = {
                         Text(
                             text = stringResource(R.string.cep),
