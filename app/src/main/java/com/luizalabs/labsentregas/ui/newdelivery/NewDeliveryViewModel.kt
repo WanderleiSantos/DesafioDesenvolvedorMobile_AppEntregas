@@ -2,8 +2,8 @@ package com.luizalabs.labsentregas.ui.newdelivery
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.luizalabs.labsentregas.core.data.local.DeliveryDataBase
 import com.luizalabs.labsentregas.core.data.local.DeliveryEntity
+import com.luizalabs.labsentregas.domain.repository.DeliveryRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -14,7 +14,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class NewDeliveryViewModel @Inject constructor(
-    private val deliveryDataBase: DeliveryDataBase
+    private val deliveryRepository: DeliveryRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow<NewDeliveryEvent>(NewDeliveryEvent.Nothing)
@@ -119,7 +119,8 @@ class NewDeliveryViewModel @Inject constructor(
                     complement = complement.value
                 )
 
-                deliveryDataBase.deliveryDao.insertDelivery(entity)
+
+                deliveryRepository.insertDelivery(entity)
 
                 _uiState.value = NewDeliveryEvent.Success
                 _navigationEvent.emit(NewDeliveryNavigationEvent.NavigateToHome)
