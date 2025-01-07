@@ -26,10 +26,10 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -40,22 +40,65 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.luizalabs.labsentregas.R
 import com.luizalabs.labsentregas.ui.components.DatePickerTextField
 import com.luizalabs.labsentregas.ui.components.DeliveryDropdownField
 import com.luizalabs.labsentregas.ui.components.DeliveryTextField
+import com.luizalabs.labsentregas.ui.navigation.Home
 import com.luizalabs.labsentregas.ui.theme.CornflowerBlue
 import com.luizalabs.labsentregas.util.BrazilStates
+import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun NewDeliveryScreen(
     navController: NavController,
     viewModel: NewDeliveryViewModel = hiltViewModel()
 ) {
-    var selectedOption by remember { mutableStateOf("") }
-    var selectedDate by remember { mutableStateOf("") }
     val loading = remember { mutableStateOf(false) }
+
+    val errorMessage = remember { mutableStateOf<String?>(null) }
+    val uiState = viewModel.uiState.collectAsState()
+
+    val packageQuantity = viewModel.packageQuantity.collectAsStateWithLifecycle()
+    val deliveryDeadline = viewModel.deliveryDeadline.collectAsStateWithLifecycle()
+    val customerName = viewModel.customerName.collectAsStateWithLifecycle()
+    val customerCpf = viewModel.customerCpf.collectAsStateWithLifecycle()
+    val zipCode = viewModel.zipCode.collectAsStateWithLifecycle()
+    val state = viewModel.state.collectAsStateWithLifecycle()
+    val city = viewModel.city.collectAsStateWithLifecycle()
+    val neighborhood = viewModel.neighborhood.collectAsStateWithLifecycle()
+    val street = viewModel.street.collectAsStateWithLifecycle()
+    val number = viewModel.number.collectAsStateWithLifecycle()
+    val complement = viewModel.complement.collectAsStateWithLifecycle()
+
+    when (uiState.value) {
+        is NewDeliveryViewModel.NewDeliveryEvent.Error -> {
+            loading.value = false
+            errorMessage.value = "Failed"
+        }
+
+        is NewDeliveryViewModel.NewDeliveryEvent.Loading -> {
+            loading.value = true
+            errorMessage.value = null
+        }
+
+        else -> {
+            loading.value = false
+            errorMessage.value = null
+        }
+    }
+
+    LaunchedEffect(true) {
+        viewModel.navigationEvent.collectLatest { event ->
+            when (event) {
+                is NewDeliveryViewModel.NewDeliveryNavigationEvent.NavigateToHome -> {
+                    navController.navigate(Home)
+                }
+            }
+        }
+    }
 
     Box(
         modifier = Modifier.fillMaxSize()
@@ -84,18 +127,22 @@ fun NewDeliveryScreen(
             )
             Spacer(modifier = Modifier.size(20.dp))
             DeliveryTextField(
-                value = "",
-                onValueChange = {},
+                value = customerName.value,
+                onValueChange = { viewModel.onCustomerNameChange(it) },
                 label = {
-                    Text(text = stringResource(R.string.cliente), color = Color.Gray, fontSize = 14.sp)
+                    Text(
+                        text = stringResource(R.string.cliente),
+                        color = Color.Gray,
+                        fontSize = 14.sp
+                    )
                 },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(48.dp)
             )
             DeliveryTextField(
-                value = "",
-                onValueChange = {},
+                value = customerCpf.value,
+                onValueChange = { viewModel.onCustomerCpfChange(it) },
                 label = {
                     Text(text = stringResource(R.string.cpf), color = Color.Gray, fontSize = 14.sp)
                 },
@@ -109,10 +156,14 @@ fun NewDeliveryScreen(
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 DeliveryTextField(
-                    value = "",
-                    onValueChange = {},
+                    value = packageQuantity.value,
+                    onValueChange = { viewModel.onPackageQuantityChange(it) },
                     label = {
-                        Text(text = stringResource(R.string.quantidade_pacotes), color = Color.Gray, fontSize = 14.sp)
+                        Text(
+                            text = stringResource(R.string.quantidade_pacotes),
+                            color = Color.Gray,
+                            fontSize = 14.sp
+                        )
                     },
                     modifier = Modifier
                         .width(180.dp)
@@ -121,10 +172,14 @@ fun NewDeliveryScreen(
                 Spacer(modifier = Modifier.width(8.dp))
                 DatePickerTextField(
                     label = {
-                        Text(text = stringResource(R.string.data_limite), color = Color.Gray, fontSize = 14.sp)
+                        Text(
+                            text = stringResource(R.string.data_limite),
+                            color = Color.Gray,
+                            fontSize = 14.sp
+                        )
                     },
-                    selectedDate = selectedDate,
-                    onDateChange = { selectedDate = it }
+                    selectedDate = deliveryDeadline.value,
+                    onDateChange = { viewModel.onDeliveryDeadlineChange(it) }
                 )
             }
             Row(
@@ -133,10 +188,14 @@ fun NewDeliveryScreen(
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 DeliveryTextField(
-                    value = "",
-                    onValueChange = {},
+                    value = zipCode.value,
+                    onValueChange = { viewModel.onZipCodeChange(it) },
                     label = {
-                        Text(text = stringResource(R.string.cep), color = Color.Gray, fontSize = 14.sp)
+                        Text(
+                            text = stringResource(R.string.cep),
+                            color = Color.Gray,
+                            fontSize = 14.sp
+                        )
                     },
                     modifier = Modifier
                         .width(230.dp)
@@ -144,25 +203,41 @@ fun NewDeliveryScreen(
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 DeliveryDropdownField(
-                    selectedValue = selectedOption,
-                    onValueChange = { selectedOption = it },
-                    label = { Text(text = stringResource(R.string.uf), color = Color.Gray, fontSize = 14.sp) },
+                    selectedValue = state.value,
+                    onValueChange = { viewModel.onStateChange(it) },
+                    label = {
+                        Text(
+                            text = stringResource(R.string.uf),
+                            color = Color.Gray,
+                            fontSize = 14.sp
+                        )
+                    },
                     options = BrazilStates.states,
                     placeholder = { Text("...") },
                 )
             }
             DeliveryDropdownField(
-                selectedValue = selectedOption,
-                onValueChange = { selectedOption = it },
-                label = { Text(text = stringResource(R.string.cidade), color = Color.Gray, fontSize = 14.sp) },
+                selectedValue = city.value,
+                onValueChange = { viewModel.onCityChange(it) },
+                label = {
+                    Text(
+                        text = stringResource(R.string.cidade),
+                        color = Color.Gray,
+                        fontSize = 14.sp
+                    )
+                },
                 options = listOf(""),
                 placeholder = { Text("...") },
             )
             DeliveryTextField(
-                value = "",
-                onValueChange = {},
+                value = neighborhood.value,
+                onValueChange = { viewModel.onNeighborhoodChange(it) },
                 label = {
-                    Text(text = stringResource(R.string.bairro), color = Color.Gray, fontSize = 14.sp)
+                    Text(
+                        text = stringResource(R.string.bairro),
+                        color = Color.Gray,
+                        fontSize = 14.sp
+                    )
                 },
                 modifier = Modifier
                     .fillMaxWidth()
@@ -174,10 +249,14 @@ fun NewDeliveryScreen(
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 DeliveryTextField(
-                    value = "",
-                    onValueChange = {},
+                    value = street.value,
+                    onValueChange = { viewModel.onStreetChange(it) },
                     label = {
-                        Text(text = stringResource(R.string.rua), color = Color.Gray, fontSize = 14.sp)
+                        Text(
+                            text = stringResource(R.string.rua),
+                            color = Color.Gray,
+                            fontSize = 14.sp
+                        )
                     },
                     modifier = Modifier
                         .width(200.dp)
@@ -185,19 +264,27 @@ fun NewDeliveryScreen(
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 DeliveryTextField(
-                    value = "",
-                    onValueChange = {},
+                    value = number.value,
+                    onValueChange = { viewModel.onNumberChange(it) },
                     label = {
-                        Text(text = stringResource(R.string.n_mero), color = Color.Gray, fontSize = 14.sp)
+                        Text(
+                            text = stringResource(R.string.n_mero),
+                            color = Color.Gray,
+                            fontSize = 14.sp
+                        )
                     },
                     modifier = Modifier.height(48.dp)
                 )
             }
             DeliveryTextField(
-                value = "",
-                onValueChange = {},
+                value = complement.value ?: "",
+                onValueChange = { viewModel.onComplementChange(it) },
                 label = {
-                    Text(text = stringResource(R.string.complemento), color = Color.Gray, fontSize = 14.sp)
+                    Text(
+                        text = stringResource(R.string.complemento),
+                        color = Color.Gray,
+                        fontSize = 14.sp
+                    )
                 },
                 modifier = Modifier
                     .fillMaxWidth()
@@ -205,11 +292,10 @@ fun NewDeliveryScreen(
             )
             Spacer(modifier = Modifier.size(16.dp))
             Button(
-                onClick = {},
+                onClick = viewModel::onAddClick,
                 modifier = Modifier
                     .height(48.dp)
-                    .fillMaxWidth()
-                    ,
+                    .fillMaxWidth(),
                 colors = ButtonDefaults.buttonColors(containerColor = CornflowerBlue)
             ) {
                 Box {

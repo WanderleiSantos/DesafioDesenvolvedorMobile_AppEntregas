@@ -1,14 +1,13 @@
 package com.luizalabs.labsentregas.core.data.local
 
 import androidx.room.Dao
+import androidx.room.Insert
 import androidx.room.Query
-import androidx.room.Upsert
 
 @Dao
 interface DeliveryDao {
-
-    @Upsert
-    suspend fun upsertDelivery(delivery: DeliveryEntity)
+    @Insert
+    suspend fun insertDelivery(delivery: DeliveryEntity)
 
     @Query("SELECT * FROM DeliveryEntity")
     suspend fun getDeliveries(): List<DeliveryEntity>

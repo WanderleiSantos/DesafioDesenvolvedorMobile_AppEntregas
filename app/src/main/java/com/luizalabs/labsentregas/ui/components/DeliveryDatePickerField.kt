@@ -46,7 +46,7 @@ fun DatePickerTextField(
         unfocusedTextColor = Color.DarkGray,
         focusedTextColor = Color.DarkGray,
     ),
-    fontSize: TextUnit = 16.sp,
+    fontSize: TextUnit = 13.sp,
 ) {
     val context = LocalContext.current
     val calendar = Calendar.getInstance()

@@ -51,7 +51,7 @@ fun DeliveryDropdownField(
         unfocusedTextColor = Color.DarkGray,
         focusedTextColor = Color.DarkGray,
     ),
-    fontSize: TextUnit = 16.sp,
+    fontSize: TextUnit = 13.sp,
 ) {
     var expanded by remember { mutableStateOf(false) }
 

@@ -6,8 +6,8 @@ import androidx.room.PrimaryKey
 @Entity
 data class DeliveryEntity(
 
-    @PrimaryKey
-    val deliveryId: Int,
+    @PrimaryKey(autoGenerate = true)
+    val deliveryId: Int = 0,
 
     val packageQuantity: Int,
     val deliveryDeadline: String,
