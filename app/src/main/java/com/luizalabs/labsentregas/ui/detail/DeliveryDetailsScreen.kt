@@ -1,12 +1,5 @@
-package com.luizalabs.labsentregas.ui.newdelivery
+package com.luizalabs.labsentregas.ui.detail
 
-import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.scaleIn
-import androidx.compose.animation.scaleOut
-import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -26,20 +19,20 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -52,18 +45,17 @@ import com.luizalabs.labsentregas.ui.components.DeliveryDropdownField
 import com.luizalabs.labsentregas.ui.components.DeliveryTextField
 import com.luizalabs.labsentregas.ui.navigation.Home
 import com.luizalabs.labsentregas.ui.theme.CornflowerBlue
+import com.luizalabs.labsentregas.ui.theme.LimeGreen
 import com.luizalabs.labsentregas.util.BrazilStates
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
-fun NewDeliveryScreen(
+fun DeliveryDetailsScreen(
     navController: NavController,
-    viewModel: NewDeliveryViewModel = hiltViewModel()
+    viewModel: DeliveryDetailsViewModel = hiltViewModel()
 ) {
-    val loading = remember { mutableStateOf(false) }
 
-    val errorMessage = remember { mutableStateOf<String?>(null) }
-    val uiState = viewModel.uiState.collectAsState()
+    val isEditable by viewModel.isEditable.collectAsState()
 
     val packageQuantity = viewModel.packageQuantity.collectAsStateWithLifecycle()
     val deliveryDeadline = viewModel.deliveryDeadline.collectAsStateWithLifecycle()
@@ -77,27 +69,10 @@ fun NewDeliveryScreen(
     val number = viewModel.number.collectAsStateWithLifecycle()
     val complement = viewModel.complement.collectAsStateWithLifecycle()
 
-    when (uiState.value) {
-        is NewDeliveryViewModel.NewDeliveryEvent.Error -> {
-            loading.value = false
-            errorMessage.value = "Failed"
-        }
-
-        is NewDeliveryViewModel.NewDeliveryEvent.Loading -> {
-            loading.value = true
-            errorMessage.value = null
-        }
-
-        else -> {
-            loading.value = false
-            errorMessage.value = null
-        }
-    }
-
     LaunchedEffect(true) {
         viewModel.navigationEvent.collectLatest { event ->
             when (event) {
-                is NewDeliveryViewModel.NewDeliveryNavigationEvent.NavigateToHome -> {
+                is DeliveryDetailsViewModel.DeliveryDetailsNavigationEvent.NavigateToHome -> {
                     navController.navigate(Home)
                 }
             }
@@ -137,8 +112,8 @@ fun NewDeliveryScreen(
                     tint = Color.DarkGray,
                 )
                 Text(
-                    text = stringResource(R.string.nova_entrega),
-                    fontSize = 28.sp,
+                    text = "Detalhes da Entrega",
+                    fontSize = 24.sp,
                     fontWeight = FontWeight.SemiBold,
                     modifier = Modifier
                         .fillMaxWidth()
@@ -146,6 +121,17 @@ fun NewDeliveryScreen(
                 )
             }
             Spacer(modifier = Modifier.size(20.dp))
+            Text(
+                text = buildAnnotatedString {
+                    append("Entrega")
+                    append(" #")
+                    append(viewModel.deliveryId.toString())
+                },
+                style = MaterialTheme
+                    .typography.labelMedium.copy(fontWeight = FontWeight.Bold),
+                fontSize = 18.sp,
+                color = Color.DarkGray,
+            )
             DeliveryTextField(
                 value = customerName.value,
                 onValueChange = {
@@ -159,6 +145,7 @@ fun NewDeliveryScreen(
                         fontSize = 14.sp
                     )
                 },
+                enabled = isEditable,
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(48.dp)
@@ -167,6 +154,7 @@ fun NewDeliveryScreen(
                 value = customerCpf.value,
                 onValueChange = { viewModel.onCustomerCpfChange(it) },
                 isError = viewModel.customerCpfError.collectAsState().value,
+                enabled = isEditable,
                 label = {
                     Text(text = stringResource(R.string.cpf), color = Color.Gray, fontSize = 14.sp)
                 },
@@ -183,6 +171,7 @@ fun NewDeliveryScreen(
                     value = packageQuantity.value,
                     onValueChange = { viewModel.onPackageQuantityChange(it) },
                     isError = viewModel.packageQuantityError.collectAsState().value,
+                    enabled = isEditable,
                     label = {
                         Text(
                             text = stringResource(R.string.quantidade_pacotes),
@@ -204,6 +193,7 @@ fun NewDeliveryScreen(
                         )
                     },
                     selectedDate = deliveryDeadline.value,
+                    enabled = isEditable,
                     onDateChange = { viewModel.onDeliveryDeadlineChange(it) },
                     isError = viewModel.deliveryDeadlineError.collectAsState().value,
                 )
@@ -217,6 +207,7 @@ fun NewDeliveryScreen(
                     value = zipCode.value,
                     onValueChange = { viewModel.onZipCodeChange(it) },
                     isError = viewModel.zipCodeError.collectAsState().value,
+                    enabled = isEditable,
                     label = {
                         Text(
                             text = stringResource(R.string.cep),
@@ -233,6 +224,7 @@ fun NewDeliveryScreen(
                     selectedValue = state.value,
                     onValueChange = { viewModel.onStateChange(it) },
                     isError = viewModel.stateError.collectAsState().value,
+                    enabled = isEditable,
                     label = {
                         Text(
                             text = stringResource(R.string.uf),
@@ -248,6 +240,7 @@ fun NewDeliveryScreen(
                 selectedValue = city.value,
                 onValueChange = { viewModel.onCityChange(it) },
                 isError = viewModel.cityError.collectAsState().value,
+                enabled = isEditable,
                 label = {
                     Text(
                         text = stringResource(R.string.cidade),
@@ -262,6 +255,7 @@ fun NewDeliveryScreen(
                 value = neighborhood.value,
                 onValueChange = { viewModel.onNeighborhoodChange(it) },
                 isError = viewModel.neighborhoodError.collectAsState().value,
+                enabled = isEditable,
                 label = {
                     Text(
                         text = stringResource(R.string.bairro),
@@ -282,6 +276,7 @@ fun NewDeliveryScreen(
                     value = street.value,
                     onValueChange = { viewModel.onStreetChange(it) },
                     isError = viewModel.streetError.collectAsState().value,
+                    enabled = isEditable,
                     label = {
                         Text(
                             text = stringResource(R.string.rua),
@@ -298,6 +293,7 @@ fun NewDeliveryScreen(
                     value = number.value,
                     onValueChange = { viewModel.onNumberChange(it) },
                     isError = viewModel.numberError.collectAsState().value,
+                    enabled = isEditable,
                     label = {
                         Text(
                             text = stringResource(R.string.n_mero),
@@ -311,6 +307,7 @@ fun NewDeliveryScreen(
             DeliveryTextField(
                 value = complement.value ?: "",
                 onValueChange = { viewModel.onComplementChange(it) },
+                enabled = isEditable,
                 label = {
                     Text(
                         text = stringResource(R.string.complemento),
@@ -323,40 +320,41 @@ fun NewDeliveryScreen(
                     .height(48.dp)
             )
             Spacer(modifier = Modifier.size(16.dp))
-            Button(
-                onClick = {
-                    if (viewModel.validateFields()) {
-                        viewModel.onAddClick()
-                    }
-                },
-                modifier = Modifier
-                    .height(48.dp)
-                    .fillMaxWidth(),
-                colors = ButtonDefaults.buttonColors(containerColor = CornflowerBlue)
-            ) {
-                Box {
-                    AnimatedContent(targetState = loading.value,
-                        transitionSpec = {
-                            fadeIn(animationSpec = tween(300)) + scaleIn(initialScale = 0.8f) togetherWith
-                                    fadeOut(animationSpec = tween(300)) + scaleOut(targetScale = 0.8f)
+
+
+            if (isEditable) {
+                Button(
+                    onClick = {
+                        if (viewModel.validateFields()) {
+                            viewModel.onSaveClick()
                         }
-                    ) { target ->
-                        if (target) {
-                            CircularProgressIndicator(
-                                color = Color.White,
-                                modifier = Modifier
-                                    .padding(horizontal = 32.dp)
-                                    .size(24.dp)
-                            )
-                        } else {
-                            Text(
-                                text = stringResource(R.string.cadastrar_entrega),
-                                color = Color.White,
-                                fontSize = 16.sp,
-                                modifier = Modifier.padding(horizontal = 32.dp)
-                            )
-                        }
-                    }
+                    },
+                    modifier = Modifier
+                        .height(48.dp)
+                        .fillMaxWidth(),
+                    colors = ButtonDefaults.buttonColors(containerColor = LimeGreen)
+                ) {
+                    Text(
+                        text = "Salvar Alterações",
+                        color = Color.White,
+                        fontSize = 16.sp,
+                        modifier = Modifier.padding(horizontal = 32.dp)
+                    )
+                }
+            } else {
+                Button(
+                    onClick = { viewModel.toggleEditMode() },
+                    modifier = Modifier
+                        .height(48.dp)
+                        .fillMaxWidth(),
+                    colors = ButtonDefaults.buttonColors(containerColor = CornflowerBlue)
+                ) {
+                    Text(
+                        text = stringResource(R.string.editar_entrega),
+                        color = Color.White,
+                        fontSize = 16.sp,
+                        modifier = Modifier.padding(horizontal = 32.dp)
+                    )
                 }
             }
         }

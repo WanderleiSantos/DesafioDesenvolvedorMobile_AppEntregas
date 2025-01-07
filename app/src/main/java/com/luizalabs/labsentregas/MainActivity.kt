@@ -8,9 +8,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
+import com.luizalabs.labsentregas.ui.detail.DeliveryDetailsScreen
 import com.luizalabs.labsentregas.ui.home.HomeScreen
 import com.luizalabs.labsentregas.ui.navigation.Home
 import com.luizalabs.labsentregas.ui.navigation.NewDelivery
@@ -37,6 +40,12 @@ class MainActivity : ComponentActivity() {
                         }
                         composable<Home> {
                             HomeScreen(navController)
+                        }
+                        composable(
+                             "Details/{deliveryId}",
+                            arguments = listOf(navArgument("deliveryId") { type = NavType.IntType })
+                        ) {
+                            DeliveryDetailsScreen(navController)
                         }
                     }
                 }

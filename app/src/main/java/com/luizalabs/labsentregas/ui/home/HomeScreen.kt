@@ -122,7 +122,9 @@ fun HomeScreen(
                                 modifier = Modifier
                                     .height(80.dp)
                                     .weight(1f)
-                                    .clickable { },
+                                    .clickable {
+                                        navController.navigate("Details/${delivery.deliveryId}")
+                                    },
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 Image(
@@ -138,7 +140,7 @@ fun HomeScreen(
                                 ) {
                                     Text(
                                         text = buildAnnotatedString {
-                                            append("Pedido")
+                                            append("Entrega")
                                             append(" #")
                                             append(delivery.deliveryId.toString())
                                         },

@@ -12,4 +12,6 @@
     <string name="rua">Rua</string>
     <string name="n_mero">Número</string>
     <string name="complemento">Complemento</string>
+    <string name="editar_entrega">Editar Entrega</string>
+    <string name="cadastrar_entrega">Cadastrar Entrega</string>
 </resources>
