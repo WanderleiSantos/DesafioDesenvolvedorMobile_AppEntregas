@@ -82,4 +82,7 @@ dependencies {
     // Retrofit
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
+
+    // Splash
+    implementation(libs.core.splashscreen)
 }

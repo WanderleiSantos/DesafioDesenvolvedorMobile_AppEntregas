@@ -76,7 +76,7 @@ fun HomeScreen(
                     .statusBarsPadding(),
             ) {
                 Text(
-                    text = "Labs Entrega",
+                    text = "Magalu Entregas",
                     fontSize = 28.sp,
                     fontWeight = FontWeight.SemiBold,
                     modifier = Modifier
