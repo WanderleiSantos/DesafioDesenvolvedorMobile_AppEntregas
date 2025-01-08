@@ -117,18 +117,16 @@ fun NewDeliveryScreen(
             modifier = Modifier.fillMaxSize(),
             contentScale = ContentScale.FillBounds
         )
-
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(16.dp)
-                .verticalScroll(rememberScrollState()),
+                .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            Spacer(modifier = Modifier.height(64.dp))
             Row(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 64.dp),
+                    .fillMaxWidth(),
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -149,224 +147,238 @@ fun NewDeliveryScreen(
                         .padding(start = 8.dp)
                 )
             }
-            Spacer(modifier = Modifier.size(20.dp))
-            DeliveryTextField(
-                value = customerName.value,
-                onValueChange = {
-                    viewModel.onCustomerNameChange(it)
-                },
-                isError = viewModel.customerNameError.collectAsState().value,
-                label = {
-                    Text(
-                        text = stringResource(R.string.cliente),
-                        color = Color.Gray,
-                        fontSize = 14.sp
-                    )
-                },
+            Box(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .height(48.dp)
-            )
-            DeliveryTextField(
-                value = customerCpf.value,
-                onValueChange = { if (it.length < 12) viewModel.onCustomerCpfChange(it) },
-                isError = viewModel.customerCpfError.collectAsState().value,
-                label = {
-                    Text(text = stringResource(R.string.cpf), color = Color.Gray, fontSize = 14.sp)
-                },
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Number
-                ),
-                visualTransformation = CpfVisualTransformation(),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(48.dp)
-            )
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
+                    .weight(1f)
+                    .verticalScroll(rememberScrollState())
             ) {
-                DeliveryTextField(
-                    value = packageQuantity.value,
-                    onValueChange = { viewModel.onPackageQuantityChange(it) },
-                    isError = viewModel.packageQuantityError.collectAsState().value,
-                    label = {
-                        Text(
-                            text = stringResource(R.string.quantidade_pacotes),
-                            color = Color.Gray,
-                            fontSize = 14.sp
-                        )
-                    },
-                    modifier = Modifier
-                        .width(180.dp)
-                        .height(48.dp),
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Number
-                    ),
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                DatePickerTextField(
-                    label = {
-                        Text(
-                            text = stringResource(R.string.data_limite),
-                            color = Color.Gray,
-                            fontSize = 14.sp
-                        )
-                    },
-                    selectedDate = deliveryDeadline.value,
-                    onDateChange = { viewModel.onDeliveryDeadlineChange(it) },
-                    isError = viewModel.deliveryDeadlineError.collectAsState().value,
-                )
-            }
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                DeliveryTextField(
-                    value = zipCode.value,
-                    onValueChange = { if (it.length < 9) viewModel.onZipCodeChange(it) },
-                    isError = viewModel.zipCodeError.collectAsState().value,
-                    visualTransformation = CepVisualTransformation(),
-                    label = {
-                        Text(
-                            text = stringResource(R.string.cep),
-                            color = Color.Gray,
-                            fontSize = 14.sp
-                        )
-                    },
-                    modifier = Modifier
-                        .width(230.dp)
-                        .height(48.dp)
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                DeliveryDropdownField(
-                    selectedValue = state.value,
-                    onValueChange = { viewModel.onStateChange(it) },
-                    isError = viewModel.stateError.collectAsState().value,
-                    label = {
-                        Text(
-                            text = stringResource(R.string.uf),
-                            color = Color.Gray,
-                            fontSize = 14.sp
-                        )
-                    },
-                    options = BrazilStates.states,
-                    placeholder = { Text("...") },
-                )
-            }
-            DeliveryDropdownField(
-                selectedValue = city.value,
-                onValueChange = { viewModel.onCityChange(it) },
-                isError = viewModel.cityError.collectAsState().value,
-                label = {
-                    Text(
-                        text = stringResource(R.string.cidade),
-                        color = Color.Gray,
-                        fontSize = 14.sp
-                    )
-                },
-                options = viewModel.cityOptions.value,
-                placeholder = { Text("...") },
-            )
-            DeliveryTextField(
-                value = neighborhood.value,
-                onValueChange = { viewModel.onNeighborhoodChange(it) },
-                isError = viewModel.neighborhoodError.collectAsState().value,
-                label = {
-                    Text(
-                        text = stringResource(R.string.bairro),
-                        color = Color.Gray,
-                        fontSize = 14.sp
-                    )
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(48.dp)
-            )
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                DeliveryTextField(
-                    value = street.value,
-                    onValueChange = { viewModel.onStreetChange(it) },
-                    isError = viewModel.streetError.collectAsState().value,
-                    label = {
-                        Text(
-                            text = stringResource(R.string.rua),
-                            color = Color.Gray,
-                            fontSize = 14.sp
-                        )
-                    },
-                    modifier = Modifier
-                        .width(200.dp)
-                        .height(48.dp)
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                DeliveryTextField(
-                    value = number.value,
-                    onValueChange = { viewModel.onNumberChange(it) },
-                    isError = viewModel.numberError.collectAsState().value,
-                    label = {
-                        Text(
-                            text = stringResource(R.string.n_mero),
-                            color = Color.Gray,
-                            fontSize = 14.sp
-                        )
-                    },
-                    modifier = Modifier.height(48.dp)
-                )
-            }
-            DeliveryTextField(
-                value = complement.value ?: "",
-                onValueChange = { viewModel.onComplementChange(it) },
-                label = {
-                    Text(
-                        text = stringResource(R.string.complemento),
-                        color = Color.Gray,
-                        fontSize = 14.sp
-                    )
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(48.dp)
-            )
-            Spacer(modifier = Modifier.size(16.dp))
-            Button(
-                onClick = {
-                    if (viewModel.validateFields()) {
-                        viewModel.onAddClick()
-                    }
-                },
-                modifier = Modifier
-                    .height(48.dp)
-                    .fillMaxWidth(),
-                colors = ButtonDefaults.buttonColors(containerColor = CornflowerBlue)
-            ) {
-                Box {
-                    AnimatedContent(targetState = loading.value,
-                        transitionSpec = {
-                            fadeIn(animationSpec = tween(300)) + scaleIn(initialScale = 0.8f) togetherWith
-                                    fadeOut(animationSpec = tween(300)) + scaleOut(targetScale = 0.8f)
-                        }
-                    ) { target ->
-                        if (target) {
-                            CircularProgressIndicator(
-                                color = Color.White,
-                                modifier = Modifier
-                                    .padding(horizontal = 32.dp)
-                                    .size(24.dp)
-                            )
-                        } else {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Spacer(modifier = Modifier.size(10.dp))
+                    DeliveryTextField(
+                        value = customerName.value,
+                        onValueChange = {
+                            viewModel.onCustomerNameChange(it)
+                        },
+                        isError = viewModel.customerNameError.collectAsState().value,
+                        label = {
                             Text(
-                                text = stringResource(R.string.cadastrar_entrega),
-                                color = Color.White,
-                                fontSize = 16.sp,
-                                modifier = Modifier.padding(horizontal = 32.dp)
+                                text = stringResource(R.string.cliente),
+                                color = Color.Gray,
+                                fontSize = 14.sp
                             )
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(48.dp)
+                    )
+                    DeliveryTextField(
+                        value = customerCpf.value,
+                        onValueChange = { if (it.length < 12) viewModel.onCustomerCpfChange(it) },
+                        isError = viewModel.customerCpfError.collectAsState().value,
+                        label = {
+                            Text(
+                                text = stringResource(R.string.cpf),
+                                color = Color.Gray,
+                                fontSize = 14.sp
+                            )
+                        },
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType = KeyboardType.Number
+                        ),
+                        visualTransformation = CpfVisualTransformation(),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(48.dp)
+                    )
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        DeliveryTextField(
+                            value = packageQuantity.value,
+                            onValueChange = { viewModel.onPackageQuantityChange(it) },
+                            isError = viewModel.packageQuantityError.collectAsState().value,
+                            label = {
+                                Text(
+                                    text = stringResource(R.string.quantidade_pacotes),
+                                    color = Color.Gray,
+                                    fontSize = 14.sp
+                                )
+                            },
+                            modifier = Modifier
+                                .width(180.dp)
+                                .height(48.dp),
+                            keyboardOptions = KeyboardOptions(
+                                keyboardType = KeyboardType.Number
+                            ),
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        DatePickerTextField(
+                            label = {
+                                Text(
+                                    text = stringResource(R.string.data_limite),
+                                    color = Color.Gray,
+                                    fontSize = 14.sp
+                                )
+                            },
+                            selectedDate = deliveryDeadline.value,
+                            onDateChange = { viewModel.onDeliveryDeadlineChange(it) },
+                            isError = viewModel.deliveryDeadlineError.collectAsState().value,
+                        )
+                    }
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        DeliveryTextField(
+                            value = zipCode.value,
+                            onValueChange = { if (it.length < 9) viewModel.onZipCodeChange(it) },
+                            isError = viewModel.zipCodeError.collectAsState().value,
+                            visualTransformation = CepVisualTransformation(),
+                            label = {
+                                Text(
+                                    text = stringResource(R.string.cep),
+                                    color = Color.Gray,
+                                    fontSize = 14.sp
+                                )
+                            },
+                            modifier = Modifier
+                                .width(230.dp)
+                                .height(48.dp)
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        DeliveryDropdownField(
+                            selectedValue = state.value,
+                            onValueChange = { viewModel.onStateChange(it) },
+                            isError = viewModel.stateError.collectAsState().value,
+                            label = {
+                                Text(
+                                    text = stringResource(R.string.uf),
+                                    color = Color.Gray,
+                                    fontSize = 14.sp
+                                )
+                            },
+                            options = BrazilStates.states,
+                            placeholder = { Text("...") },
+                        )
+                    }
+                    DeliveryDropdownField(
+                        selectedValue = city.value,
+                        onValueChange = { viewModel.onCityChange(it) },
+                        isError = viewModel.cityError.collectAsState().value,
+                        label = {
+                            Text(
+                                text = stringResource(R.string.cidade),
+                                color = Color.Gray,
+                                fontSize = 14.sp
+                            )
+                        },
+                        options = viewModel.cityOptions.value,
+                        placeholder = { Text("...") },
+                    )
+                    DeliveryTextField(
+                        value = neighborhood.value,
+                        onValueChange = { viewModel.onNeighborhoodChange(it) },
+                        isError = viewModel.neighborhoodError.collectAsState().value,
+                        label = {
+                            Text(
+                                text = stringResource(R.string.bairro),
+                                color = Color.Gray,
+                                fontSize = 14.sp
+                            )
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(48.dp)
+                    )
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        DeliveryTextField(
+                            value = street.value,
+                            onValueChange = { viewModel.onStreetChange(it) },
+                            isError = viewModel.streetError.collectAsState().value,
+                            label = {
+                                Text(
+                                    text = stringResource(R.string.rua),
+                                    color = Color.Gray,
+                                    fontSize = 14.sp
+                                )
+                            },
+                            modifier = Modifier
+                                .width(200.dp)
+                                .height(48.dp)
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        DeliveryTextField(
+                            value = number.value,
+                            onValueChange = { viewModel.onNumberChange(it) },
+                            isError = viewModel.numberError.collectAsState().value,
+                            label = {
+                                Text(
+                                    text = stringResource(R.string.n_mero),
+                                    color = Color.Gray,
+                                    fontSize = 14.sp
+                                )
+                            },
+                            modifier = Modifier.height(48.dp)
+                        )
+                    }
+                    DeliveryTextField(
+                        value = complement.value ?: "",
+                        onValueChange = { viewModel.onComplementChange(it) },
+                        label = {
+                            Text(
+                                text = stringResource(R.string.complemento),
+                                color = Color.Gray,
+                                fontSize = 14.sp
+                            )
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(48.dp)
+                    )
+                    Spacer(modifier = Modifier.size(16.dp))
+                    Button(
+                        onClick = {
+                            if (viewModel.validateFields()) {
+                                viewModel.onAddClick()
+                            }
+                        },
+                        modifier = Modifier
+                            .height(48.dp)
+                            .fillMaxWidth(),
+                        colors = ButtonDefaults.buttonColors(containerColor = CornflowerBlue)
+                    ) {
+                        Box {
+                            AnimatedContent(targetState = loading.value,
+                                transitionSpec = {
+                                    fadeIn(animationSpec = tween(300)) + scaleIn(initialScale = 0.8f) togetherWith
+                                            fadeOut(animationSpec = tween(300)) + scaleOut(
+                                        targetScale = 0.8f
+                                    )
+                                }
+                            ) { target ->
+                                if (target) {
+                                    CircularProgressIndicator(
+                                        color = Color.White,
+                                        modifier = Modifier
+                                            .padding(horizontal = 32.dp)
+                                            .size(24.dp)
+                                    )
+                                } else {
+                                    Text(
+                                        text = stringResource(R.string.cadastrar_entrega),
+                                        color = Color.White,
+                                        fontSize = 16.sp,
+                                        modifier = Modifier.padding(horizontal = 32.dp)
+                                    )
+                                }
+                            }
                         }
                     }
                 }

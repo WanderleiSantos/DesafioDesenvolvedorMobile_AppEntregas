@@ -92,18 +92,16 @@ fun DeliveryDetailsScreen(
             modifier = Modifier.fillMaxSize(),
             contentScale = ContentScale.FillBounds
         )
-
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(16.dp)
-                .verticalScroll(rememberScrollState()),
+                .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            Spacer(modifier = Modifier.height(64.dp))
             Row(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 64.dp),
+                    .fillMaxWidth(),
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -124,249 +122,262 @@ fun DeliveryDetailsScreen(
                         .padding(start = 8.dp)
                 )
             }
-            Spacer(modifier = Modifier.size(20.dp))
-            Text(
-                text = buildAnnotatedString {
-                    append("Entrega")
-                    append(" #")
-                    append(viewModel.deliveryId.toString())
-                },
-                style = MaterialTheme
-                    .typography.labelMedium.copy(fontWeight = FontWeight.Bold),
-                fontSize = 18.sp,
-                color = Color.DarkGray,
-            )
-            DeliveryTextField(
-                value = customerName.value,
-                onValueChange = {
-                    viewModel.onCustomerNameChange(it)
-                },
-                isError = viewModel.customerNameError.collectAsState().value,
-                label = {
-                    Text(
-                        text = stringResource(R.string.cliente),
-                        color = Color.Gray,
-                        fontSize = 14.sp
-                    )
-                },
-                enabled = isEditable,
+            Box(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .height(48.dp)
-            )
-            DeliveryTextField(
-                value = customerCpf.value,
-                onValueChange = { if (it.length < 12) viewModel.onCustomerCpfChange(it) },
-                isError = viewModel.customerCpfError.collectAsState().value,
-                enabled = isEditable,
-                label = {
-                    Text(text = stringResource(R.string.cpf), color = Color.Gray, fontSize = 14.sp)
-                },
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Number
-                ),
-                visualTransformation = CpfVisualTransformation(),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(48.dp)
-            )
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
+                    .weight(1f)
+                    .verticalScroll(rememberScrollState())
             ) {
-                DeliveryTextField(
-                    value = packageQuantity.value,
-                    onValueChange = { viewModel.onPackageQuantityChange(it) },
-                    isError = viewModel.packageQuantityError.collectAsState().value,
-                    enabled = isEditable,
-                    label = {
-                        Text(
-                            text = stringResource(R.string.quantidade_pacotes),
-                            color = Color.Gray,
-                            fontSize = 14.sp
-                        )
-                    },
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Number
-                    ),
-                    modifier = Modifier
-                        .width(180.dp)
-                        .height(48.dp)
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                DatePickerTextField(
-                    label = {
-                        Text(
-                            text = stringResource(R.string.data_limite),
-                            color = Color.Gray,
-                            fontSize = 14.sp
-                        )
-                    },
-                    selectedDate = deliveryDeadline.value,
-                    enabled = isEditable,
-                    onDateChange = { viewModel.onDeliveryDeadlineChange(it) },
-                    isError = viewModel.deliveryDeadlineError.collectAsState().value,
-                )
-            }
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                DeliveryTextField(
-                    value = zipCode.value,
-                    onValueChange = { if (it.length < 9) viewModel.onZipCodeChange(it) },
-                    isError = viewModel.zipCodeError.collectAsState().value,
-                    enabled = isEditable,
-                    visualTransformation = CepVisualTransformation(),
-                    label = {
-                        Text(
-                            text = stringResource(R.string.cep),
-                            color = Color.Gray,
-                            fontSize = 14.sp
-                        )
-                    },
-                    modifier = Modifier
-                        .width(230.dp)
-                        .height(48.dp)
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                DeliveryDropdownField(
-                    selectedValue = state.value,
-                    onValueChange = { viewModel.onStateChange(it) },
-                    isError = viewModel.stateError.collectAsState().value,
-                    enabled = isEditable,
-                    label = {
-                        Text(
-                            text = stringResource(R.string.uf),
-                            color = Color.Gray,
-                            fontSize = 14.sp
-                        )
-                    },
-                    options = BrazilStates.states,
-                    placeholder = { Text("...") },
-                )
-            }
-            DeliveryDropdownField(
-                selectedValue = city.value,
-                onValueChange = { viewModel.onCityChange(it) },
-                isError = viewModel.cityError.collectAsState().value,
-                enabled = isEditable,
-                label = {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+
+                    Spacer(modifier = Modifier.size(20.dp))
                     Text(
-                        text = stringResource(R.string.cidade),
-                        color = Color.Gray,
-                        fontSize = 14.sp
+                        text = buildAnnotatedString {
+                            append("Entrega")
+                            append(" #")
+                            append(viewModel.deliveryId.toString())
+                        },
+                        style = MaterialTheme
+                            .typography.labelMedium.copy(fontWeight = FontWeight.Bold),
+                        fontSize = 18.sp,
+                        color = Color.DarkGray,
                     )
-                },
-                options = viewModel.cityOptions.value,
-                placeholder = { Text("...") },
-            )
-            DeliveryTextField(
-                value = neighborhood.value,
-                onValueChange = { viewModel.onNeighborhoodChange(it) },
-                isError = viewModel.neighborhoodError.collectAsState().value,
-                enabled = isEditable,
-                label = {
-                    Text(
-                        text = stringResource(R.string.bairro),
-                        color = Color.Gray,
-                        fontSize = 14.sp
+                    DeliveryTextField(
+                        value = customerName.value,
+                        onValueChange = {
+                            viewModel.onCustomerNameChange(it)
+                        },
+                        isError = viewModel.customerNameError.collectAsState().value,
+                        label = {
+                            Text(
+                                text = stringResource(R.string.cliente),
+                                color = Color.Gray,
+                                fontSize = 14.sp
+                            )
+                        },
+                        enabled = isEditable,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(48.dp)
                     )
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(48.dp)
-            )
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                DeliveryTextField(
-                    value = street.value,
-                    onValueChange = { viewModel.onStreetChange(it) },
-                    isError = viewModel.streetError.collectAsState().value,
-                    enabled = isEditable,
-                    label = {
-                        Text(
-                            text = stringResource(R.string.rua),
-                            color = Color.Gray,
-                            fontSize = 14.sp
+                    DeliveryTextField(
+                        value = customerCpf.value,
+                        onValueChange = { if (it.length < 12) viewModel.onCustomerCpfChange(it) },
+                        isError = viewModel.customerCpfError.collectAsState().value,
+                        enabled = isEditable,
+                        label = {
+                            Text(
+                                text = stringResource(R.string.cpf),
+                                color = Color.Gray,
+                                fontSize = 14.sp
+                            )
+                        },
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType = KeyboardType.Number
+                        ),
+                        visualTransformation = CpfVisualTransformation(),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(48.dp)
+                    )
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        DeliveryTextField(
+                            value = packageQuantity.value,
+                            onValueChange = { viewModel.onPackageQuantityChange(it) },
+                            isError = viewModel.packageQuantityError.collectAsState().value,
+                            enabled = isEditable,
+                            label = {
+                                Text(
+                                    text = stringResource(R.string.quantidade_pacotes),
+                                    color = Color.Gray,
+                                    fontSize = 14.sp
+                                )
+                            },
+                            keyboardOptions = KeyboardOptions(
+                                keyboardType = KeyboardType.Number
+                            ),
+                            modifier = Modifier
+                                .width(180.dp)
+                                .height(48.dp)
                         )
-                    },
-                    modifier = Modifier
-                        .width(200.dp)
-                        .height(48.dp)
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                DeliveryTextField(
-                    value = number.value,
-                    onValueChange = { viewModel.onNumberChange(it) },
-                    isError = viewModel.numberError.collectAsState().value,
-                    enabled = isEditable,
-                    label = {
-                        Text(
-                            text = stringResource(R.string.n_mero),
-                            color = Color.Gray,
-                            fontSize = 14.sp
+                        Spacer(modifier = Modifier.width(8.dp))
+                        DatePickerTextField(
+                            label = {
+                                Text(
+                                    text = stringResource(R.string.data_limite),
+                                    color = Color.Gray,
+                                    fontSize = 14.sp
+                                )
+                            },
+                            selectedDate = deliveryDeadline.value,
+                            enabled = isEditable,
+                            onDateChange = { viewModel.onDeliveryDeadlineChange(it) },
+                            isError = viewModel.deliveryDeadlineError.collectAsState().value,
                         )
-                    },
-                    modifier = Modifier.height(48.dp)
-                )
-            }
-            DeliveryTextField(
-                value = complement.value ?: "",
-                onValueChange = { viewModel.onComplementChange(it) },
-                enabled = isEditable,
-                label = {
-                    Text(
-                        text = stringResource(R.string.complemento),
-                        color = Color.Gray,
-                        fontSize = 14.sp
+                    }
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        DeliveryTextField(
+                            value = zipCode.value,
+                            onValueChange = { if (it.length < 9) viewModel.onZipCodeChange(it) },
+                            isError = viewModel.zipCodeError.collectAsState().value,
+                            enabled = isEditable,
+                            visualTransformation = CepVisualTransformation(),
+                            label = {
+                                Text(
+                                    text = stringResource(R.string.cep),
+                                    color = Color.Gray,
+                                    fontSize = 14.sp
+                                )
+                            },
+                            modifier = Modifier
+                                .width(230.dp)
+                                .height(48.dp)
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        DeliveryDropdownField(
+                            selectedValue = state.value,
+                            onValueChange = { viewModel.onStateChange(it) },
+                            isError = viewModel.stateError.collectAsState().value,
+                            enabled = isEditable,
+                            label = {
+                                Text(
+                                    text = stringResource(R.string.uf),
+                                    color = Color.Gray,
+                                    fontSize = 14.sp
+                                )
+                            },
+                            options = BrazilStates.states,
+                            placeholder = { Text("...") },
+                        )
+                    }
+                    DeliveryDropdownField(
+                        selectedValue = city.value,
+                        onValueChange = { viewModel.onCityChange(it) },
+                        isError = viewModel.cityError.collectAsState().value,
+                        enabled = isEditable,
+                        label = {
+                            Text(
+                                text = stringResource(R.string.cidade),
+                                color = Color.Gray,
+                                fontSize = 14.sp
+                            )
+                        },
+                        options = viewModel.cityOptions.value,
+                        placeholder = { Text("...") },
                     )
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(48.dp)
-            )
-            Spacer(modifier = Modifier.size(16.dp))
+                    DeliveryTextField(
+                        value = neighborhood.value,
+                        onValueChange = { viewModel.onNeighborhoodChange(it) },
+                        isError = viewModel.neighborhoodError.collectAsState().value,
+                        enabled = isEditable,
+                        label = {
+                            Text(
+                                text = stringResource(R.string.bairro),
+                                color = Color.Gray,
+                                fontSize = 14.sp
+                            )
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(48.dp)
+                    )
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        DeliveryTextField(
+                            value = street.value,
+                            onValueChange = { viewModel.onStreetChange(it) },
+                            isError = viewModel.streetError.collectAsState().value,
+                            enabled = isEditable,
+                            label = {
+                                Text(
+                                    text = stringResource(R.string.rua),
+                                    color = Color.Gray,
+                                    fontSize = 14.sp
+                                )
+                            },
+                            modifier = Modifier
+                                .width(200.dp)
+                                .height(48.dp)
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        DeliveryTextField(
+                            value = number.value,
+                            onValueChange = { viewModel.onNumberChange(it) },
+                            isError = viewModel.numberError.collectAsState().value,
+                            enabled = isEditable,
+                            label = {
+                                Text(
+                                    text = stringResource(R.string.n_mero),
+                                    color = Color.Gray,
+                                    fontSize = 14.sp
+                                )
+                            },
+                            modifier = Modifier.height(48.dp)
+                        )
+                    }
+                    DeliveryTextField(
+                        value = complement.value ?: "",
+                        onValueChange = { viewModel.onComplementChange(it) },
+                        enabled = isEditable,
+                        label = {
+                            Text(
+                                text = stringResource(R.string.complemento),
+                                color = Color.Gray,
+                                fontSize = 14.sp
+                            )
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(48.dp)
+                    )
+                    Spacer(modifier = Modifier.size(16.dp))
 
 
-            if (isEditable) {
-                Button(
-                    onClick = {
-                        if (viewModel.validateFields()) {
-                            viewModel.onSaveClick()
+                    if (isEditable) {
+                        Button(
+                            onClick = {
+                                if (viewModel.validateFields()) {
+                                    viewModel.onSaveClick()
+                                }
+                            },
+                            modifier = Modifier
+                                .height(48.dp)
+                                .fillMaxWidth(),
+                            colors = ButtonDefaults.buttonColors(containerColor = LimeGreen)
+                        ) {
+                            Text(
+                                text = "Salvar Alterações",
+                                color = Color.White,
+                                fontSize = 16.sp,
+                                modifier = Modifier.padding(horizontal = 32.dp)
+                            )
                         }
-                    },
-                    modifier = Modifier
-                        .height(48.dp)
-                        .fillMaxWidth(),
-                    colors = ButtonDefaults.buttonColors(containerColor = LimeGreen)
-                ) {
-                    Text(
-                        text = "Salvar Alterações",
-                        color = Color.White,
-                        fontSize = 16.sp,
-                        modifier = Modifier.padding(horizontal = 32.dp)
-                    )
-                }
-            } else {
-                Button(
-                    onClick = { viewModel.toggleEditMode() },
-                    modifier = Modifier
-                        .height(48.dp)
-                        .fillMaxWidth(),
-                    colors = ButtonDefaults.buttonColors(containerColor = CornflowerBlue)
-                ) {
-                    Text(
-                        text = stringResource(R.string.editar_entrega),
-                        color = Color.White,
-                        fontSize = 16.sp,
-                        modifier = Modifier.padding(horizontal = 32.dp)
-                    )
+                    } else {
+                        Button(
+                            onClick = { viewModel.toggleEditMode() },
+                            modifier = Modifier
+                                .height(48.dp)
+                                .fillMaxWidth(),
+                            colors = ButtonDefaults.buttonColors(containerColor = CornflowerBlue)
+                        ) {
+                            Text(
+                                text = stringResource(R.string.editar_entrega),
+                                color = Color.White,
+                                fontSize = 16.sp,
+                                modifier = Modifier.padding(horizontal = 32.dp)
+                            )
+                        }
+                    }
                 }
             }
         }

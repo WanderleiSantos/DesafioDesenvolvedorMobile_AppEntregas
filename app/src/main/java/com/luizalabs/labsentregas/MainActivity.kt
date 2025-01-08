@@ -34,7 +34,6 @@ import kotlinx.coroutines.launch
 class MainActivity : ComponentActivity() {
     private var showSplashScreen = true
     override fun onCreate(savedInstanceState: Bundle?) {
-
         installSplashScreen().apply {
             setKeepOnScreenCondition{
                 showSplashScreen
@@ -70,6 +69,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             LabsEntregasTheme {
+
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     val navController = rememberNavController()
                     NavHost(
