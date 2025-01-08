@@ -22,7 +22,7 @@ class HomeViewModel @Inject constructor(
         fetchDeliveries()
     }
 
-    private fun fetchDeliveries() {
+    fun fetchDeliveries() {
         viewModelScope.launch {
             _deliveries.value = deliveryRepository.getDeliveries()
         }

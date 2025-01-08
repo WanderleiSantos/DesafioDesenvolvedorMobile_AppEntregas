@@ -61,6 +61,10 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
+    testImplementation(libs.mockk)
+    testImplementation(libs.kotlinx.coroutines.test)
+
+
     // Room
     implementation(libs.bundles.room)
     annotationProcessor(libs.androidx.room.compiler)
